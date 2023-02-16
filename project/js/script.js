@@ -14,31 +14,72 @@
 
 'use strict';
 
-const movieDB = {
-    movies: [
-        "Логан",
-        "Лига справедливости",
-        "Ла-ла лэнд",
-        "Одержимость",
-        "Скотт Пилигрим против..."
-    ]
-};
+document.addEventListener('DOMContentLoaded', () => {
+    const movieDB = {
+        movies: [
+            "Логан",
+            "Лига справедливости",
+            "Ла-ла лэнд",
+            "Одержимость",
+            "Скотт Пилигрим против..."
+        ]
+    };
+    
+    movieDB.movies.sort();
+    
+    const adBlock = document.querySelectorAll(".promo__adv img"),
+        list = document.querySelector('.promo__interactive-list'),
+        addForm = document.querySelector('form.add'),
+        addInput = addForm.querySelector('.adding__input'),
+        checkbox = addForm.querySelector('[type="checkbox"]');
 
-const adBlock = document.querySelectorAll(".promo__adv");
-adBlock.forEach(item => {
-    item.remove();
+    addForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+
+        const newFilm = addInput.value;
+        const favorite = checkbox.checked;
+
+        movieDB.movies.push(newFilm);
+        movieDB.movies.sort();
+
+    });
+
+    const deleteAdv = (arr) => {
+        arr.forEach(item => {
+            item.remove();
+        });
+    };
+
+    deleteAdv(adBlock);
+
+    const makeChanges = () => {
+        document.querySelector('.promo__genre').textContent = "Драма";
+        document.querySelector('.promo__bg').style.cssText = "background-image: url('img/bg.jpg')";
+        /* или document.querySelector('.promo__bg').style.backgroundImage = 'url("img/bg.jpg")'; */
+    };
+    
+    makeChanges();
+    
+    movieDB.movies.sort();
+
+    function createMovieList(films, parent) {
+        parent.innerHTML = "";
+
+    
+        films.forEach (function (item, i) {
+            parent.innerHTML += `
+                <li class="promo__interactive-item">${i+1} ${item}
+                    <div class="delete"></div>
+                </li>
+            `;
+        });
+    }
+    
+    createMovieList(movieDB.movies, list);
+
+
 });
 
-document.querySelector('.promo__genre').textContent = "Драма";
-
-document.querySelector('.promo__bg').style.cssText = "background-image: url('img/bg.jpg')";
-
-
-movieDB.movies.sort();
-
-const films = document.querySelectorAll('.promo__interactive-item');
-films.forEach (function(item, i) {
-    item.insertAdjacentHTML("beforeend", `${i+1} ${movieDB.movies[i]} <div class="delete"></div>`);
-});
 
 
