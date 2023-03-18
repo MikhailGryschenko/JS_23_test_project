@@ -37,14 +37,24 @@ window.addEventListener('DOMContentLoaded', () => {
 
     // Timer
 
-    const deadLine = '2023-03-18';
+    const deadLine = '2023-07-07';
 
     function getTimeRemaining (endTime) {
-        const t = Date.parse(endTime) - Date.parse(new Date()),
+        let days, hours, minutes, seconds;
+        const t = Date.parse(endTime) - Date.parse(new Date());
+
+        if(t <= 0 ) {
+            days = 0;
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+        } else {
             days = Math.floor(t/(1000*60*60*24)),
             hours = Math.floor((t/(1000*60*60))%24),
             minutes = Math.floor((t/1000/60)%60),
             seconds = Math.floor((t/1000)%60);
+        }
+
         return {
             'total': t,
             'days': days,
@@ -86,7 +96,45 @@ window.addEventListener('DOMContentLoaded', () => {
     }
     setClock('.timer', deadLine);
 
+    // Modal
 
+    const btnOpen = document.querySelectorAll('[data-modal]'),
+        btnClose = document.querySelector('[data-close]'),
+        modalWindow = document.querySelector('.modal');
+    
+        function openModal () {
+            modalWindow.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+            clearInterval(modalTimerId);
+        }
+        function closeModal () {
+            modalWindow.style.display = 'none';
+            document.body.style.overflow = '';
+        }
+        btnOpen.forEach(btn => {
+            btn.addEventListener('click', openModal);
+        });
+        modalWindow.addEventListener('click', (e) => {
+            if(e.target === modalWindow) {
+                closeModal (); 
+            }
+        });
+        document.addEventListener('keydown', (e) => {
+            if(e.code === 'Escape') {
+                closeModal();
+            }
+        });
+        btnClose.addEventListener('click', closeModal);
+
+        const modalTimerId = setTimeout(openModal, 5000);
+
+        function showModalByScroll() {
+            if(window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight -1) {
+                openModal();
+                window.removeEventListener('scroll', showModalByScroll);
+            }
+        }
+        window.addEventListener('scroll', showModalByScroll);
 });
- 
+
 
